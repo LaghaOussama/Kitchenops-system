@@ -17,6 +17,8 @@ router.post("/", async (req, res) => {
     const command = new Command(req.body);
     command.priority = calculatePriority(command);
     const saved = await command.save();
+    const io = req.app.get("io");
+    io.emit("newCommand", saved);
 
     res.status(201).json(saved);
   } catch (error) {
@@ -41,6 +43,8 @@ router.put("/:id/status", async (req, res) => {
     { status },
     { new: true },
   );
+  const io = req.app.get("io");
+  io.emit("updateCommand", updated);
   res.json(updated);
 });
 
