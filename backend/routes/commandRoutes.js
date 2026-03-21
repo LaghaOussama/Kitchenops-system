@@ -13,6 +13,9 @@ router.post("/", async (req, res) => {
         message: "tableNumber is required",
       });
     }
+    if (!req.body) {
+      return res.status(400).json({ message: "Body is required" });
+    }
 
     const command = new Command(req.body);
     command.priority = calculatePriority(command);
@@ -37,7 +40,7 @@ router.get("/", async (req, res) => {
 
 // UPDATE STATUS
 router.put("/:id/status", async (req, res) => {
-  const { status } = req.body;
+  const { status } = req.body || {};
   const updated = await Command.findByIdAndUpdate(
     req.params.id,
     { status },
