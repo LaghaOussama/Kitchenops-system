@@ -1,18 +1,32 @@
 require("dotenv").config();
 const express = require("express");
-const app = express();
-app.use(express.json());
-
-const commandRoutes = require("./routes/commandRoutes");
-app.get("/", (req, res) => {
-  res.send("KitchenOps running");
-});
-
+const http = require("http");
+const { Server } = require("socket.io");
 const connectDB = require("./config/db");
+const commandRoutes = require("./routes/commandRoutes");
+
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+  },
+});
 
 connectDB();
-//console.log(process.env.MONGO_URI); For debug to check if env variable is loaded
+
+app.use(express.json());
 app.use("/api/commands", commandRoutes);
-app.listen(5000, () => {
-  console.log("Server running on port 5000");
+
+// WebSocket connexion
+io.on("connection", (socket) => {
+  console.log("Client connected:", socket.id);
 });
+
+const PORT = process.env.PORT || 5000;
+
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+app.set("io", io);
