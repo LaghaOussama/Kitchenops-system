@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Command = require("../models/Command");
+const calculatePriority = require("../services/priorityService");
 
 // CREATE
 router.post("/", async (req, res) => {
@@ -17,6 +18,7 @@ router.post("/", async (req, res) => {
     }
 
     const command = new Command(req.body);
+    command.priority = calculatePriority(command);
     const saved = await command.save();
 
     res.status(201).json(saved);
@@ -30,7 +32,7 @@ router.post("/", async (req, res) => {
 
 // GET ALL
 router.get("/", async (req, res) => {
-  const commands = await Command.find();
+  const commands = await Command.find().sort({ priority: -1, createdAt: 1 });
   res.json(commands);
 });
 
