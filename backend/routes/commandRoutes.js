@@ -4,9 +4,25 @@ const Command = require("../models/Command");
 
 // CREATE
 router.post("/", async (req, res) => {
-  const command = new Command(req.body);
-  const saved = await command.save();
-  res.json(saved);
+  try {
+    const { tableNumber, items } = req.body;
+
+    if (!tableNumber) {
+      return res.status(400).json({
+        message: "tableNumber is required",
+      });
+    }
+
+    const command = new Command(req.body);
+    const saved = await command.save();
+
+    res.status(201).json(saved);
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
+  }
 });
 
 // GET ALL

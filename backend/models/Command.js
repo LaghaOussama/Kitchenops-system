@@ -1,25 +1,28 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const commandSchema = new mongoose.Schema({
-  tableNumber: {
-    type: Number,
-    required: true,
-  },
-  items: [
-    {
-      name: String,
-      quantity: Number,
+const commandSchema = new mongoose.Schema(
+  {
+    tableNumber: {
+      type: Number,
+      required: true,
     },
-  ],
-  status: {
-    type: String,
-    enum: ['pending', 'in_progress', 'ready', 'served'],
-    default: 'pending',
+    items: [
+      {
+        name: String,
+        quantity: Number,
+      },
+    ],
+    status: {
+      type: String,
+      enum: ["pending", "in_progress", "ready", "served"],
+      default: "pending",
+    },
+    priority: {
+      type: Number,
+      default: 0,
+    },
   },
-  priority: {
-    type: Number,
-    default: 0,
-  },
-}, { timestamps: true });
+  { timestamps: true },
+);
 
-module.exports = mongoose.model('Command', commandSchema);
+module.exports = mongoose.model("Command", commandSchema);
