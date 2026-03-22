@@ -18,6 +18,9 @@ router.post("/", auth, async (req, res) => {
         message: "tableNumber is required",
       });
     }
+    if (!req.body) {
+      return res.status(400).json({ message: "Body is required" });
+    }
 
     const command = new Command(req.body);
     command.priority = calculatePriority(command);
